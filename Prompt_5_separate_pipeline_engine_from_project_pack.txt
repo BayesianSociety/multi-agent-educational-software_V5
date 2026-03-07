@@ -1,0 +1,358 @@
+CONTEXT / SPECIFICATION (read fully before responding)
+Read this entire document before writing any files. Then execute exactly as specified.
+
+# Prompt 5: Unified Deterministic Engine Prompt + Replaceable Project Prompt
+
+This document is intentionally split into two prompts:
+1. Engine Prompt (stable, rarely changed)
+2. Project Prompt (replaceable per project)
+
+The engine prompt defines mechanics only.
+The project prompt defines product contract only.
+
+No hidden mode switching is allowed.
+There is one workflow, always deterministic, always full capability.
+
+----------------------------------------------------------------------
+SHARED CONTRACT BETWEEN ENGINE PROMPT AND PROJECT PROMPT
+
+The following interfaces are mandatory and fixed:
+
+1) Human readable project contract file
+- Path: PROJECT_BRIEF.md
+- Purpose: authoritative Layer 0 to Layer 3 project constraints.
+
+2) Machine readable project contract file
+- Path: PROJECT_BRIEF.yaml
+- Parsing requirement: must be valid JSON text (YAML 1.2 JSON subset) so Python stdlib json parser can load it.
+- Purpose: deterministic toggles only.
+
+3) Error code style
+- All deterministic validator or invariant failures must emit uppercase underscore error codes.
+- Examples: ALLOWLIST_VIOLATION, BRIEF_YAML_INVALID, BACKEND_UNUSED, TEST_CMD_MISSING.
+
+4) Run artifact location
+- All orchestrator state and logs must live under:
+  - .orchestrator/policy.json
+  - .orchestrator/runs/<run_id>/**
+  - .orchestrator/evals/<run_id>.json
+
+5) Locking contract
+- PROJECT_BRIEF.md and PROJECT_BRIEF.yaml become locked after bootstrap step success.
+- Any later modification attempt is a hard failure with deterministic rollback.
+
+----------------------------------------------------------------------
+ENGINE PROMPT (STABLE, RARELY CHANGED)
+
+Goal:
+Build a single Python orchestrator script at repository root named orchestrator.py.
+This orchestrator runs deterministic multi step software generation through codex exec subprocess calls.
+
+ENGINE SECTION 1: Environment and command invocation behavior
+
+Requirements:
+- Python 3.11 or newer.
+- Must run inside a Git repository.
+- Use codex exec as subprocess. Do not use OpenAI API. Do not use Codex software development kit.
+
+Command behavior:
+- Default invocation must be:
+  - codex exec --sandbox workspace-write -
+- Prompt must be passed through stdin.
+- stdout and stderr must be captured.
+
+Optional flag feature detection:
+- Deterministically inspect codex exec --help output.
+- Detect support for optional flags including:
+  - --experimental-json
+  - --output-schema
+  - --ask-for-approval
+  - --config
+- If a flag is unsupported, do not use it.
+- Unsupported flag handling must be deterministic and logged.
+
+Transient failure handling:
+- Detect transport failures using deterministic string patterns.
+- Retry within the same attempt with bounded retries and deterministic backoff.
+- After retry limit, fail the attempt deterministically.
+
+ENGINE SECTION 2: Run window safety model
+
+Before each codex run:
+- Capture pre run snapshot of repository files.
+- Capture pre run listing of untracked files.
+- Capture Git integrity state:
+  - git rev-parse HEAD
+  - git diff --cached --name-only must be empty
+
+After each codex run, before writing .orchestrator artifacts:
+- Capture post run snapshot.
+- Compute changed paths.
+- Enforce forbidden path rules.
+- Enforce allowlist for current step.
+- Enforce path traversal and symlink safety.
+- Enforce change caps.
+
+Forbidden paths:
+- .orchestrator/**
+- .git/**
+
+Revert behavior:
+- On any invariant or validator failure, rollback deterministically.
+- Restore previous tracked file state.
+- Remove unauthorized new untracked files and directories created during run window.
+
+ENGINE SECTION 3: Step model, allowlists, retries, and rollback
+
+Pipeline steps (minimum):
+1. release_engineer
+2. planner
+3. requirements
+4. designer
+5. frontend
+6. backend (if backend_required in project contract)
+7. qa
+8. docs
+9. product_acceptance_gate
+
+Rules:
+- Every step has explicit allowlisted paths.
+- A step can pass only if codex exit code is success and all step validators pass.
+- Retries are bounded, maximum three attempts per step.
+- Rollback is required on failed attempts.
+
+Change caps (default):
+- max_changed_files: 60
+- max_total_bytes_changed: 500000
+- max_deleted_files: 0
+
+ENGINE SECTION 4: Validator framework and timing framework
+
+Validator architecture:
+- Step scoped validators must run at each step.
+- Product acceptance validators must run as final gate.
+
+Timing requirements:
+- release_engineer validates bootstrap documents and bootstrap constraints only.
+- release_engineer must not fail because feature directories are not yet created by later owning steps.
+- backend integration evidence checks must run after frontend and backend execution opportunity, and in product acceptance gate.
+
+Deterministic validator classes:
+1. Existence validators
+- Required root files exist.
+- Required directories exist at the correct stage.
+
+2. Structure validators
+- Required headings and required sections in documentation.
+- Planner output JSON structure keys.
+
+3. Ownership validators
+- Step may only edit allowed files.
+- Cross ownership edits produce deterministic failure codes.
+
+4. Infrastructure validators
+- docker-compose.yml, .env.example, .gitignore expectations when backend or database is required.
+
+5. Project brief validators
+- PROJECT_BRIEF.md exists and includes required layer headings.
+- PROJECT_BRIEF.yaml parses with json parser and required keys exist.
+
+6. Product acceptance validators
+- Required behavior implemented.
+- Persistence path implemented and verifiable.
+- End to end deterministic test exists and passes.
+- User experience baseline checks present.
+
+7. Prompt quality and coverage validators
+- Every step prompt must include Layer 0 constraints.
+- Every step prompt must include role relevant requirements from Layer 1 to Layer 3 using deterministic role mapping.
+- Prompt must include role relevant acceptance criteria bullets.
+- Prompt must include role relevant non goals or forbidden constraints when present.
+- Prompt fails with deterministic codes when weak or generic:
+  - PROMPT_TOO_SHORT
+  - PROMPT_MISSING_LAYER0
+  - PROMPT_ROLE_COVERAGE_GAP
+  - PROMPT_MISSING_ACCEPTANCE
+  - PROMPT_GENERIC_EXCERPT
+
+ENGINE SECTION 5: Test command extraction framework
+
+Default deterministic extraction:
+- Read TEST.md section titled "How to run tests".
+- Use first fenced code block.
+- Execute non empty non comment lines in order.
+- Any extraction failure returns TEST_CMD_MISSING.
+
+Optional profile extraction from PROJECT_BRIEF.yaml:
+- If tests.command_source equals profile and tests.commands is present:
+  - execute only listed commands in order.
+  - validate TEST.md documents these commands.
+
+ENGINE SECTION 6: Policy learning framework
+
+Persistent policy file:
+- Path: .orchestrator/policy.json
+- Contains deterministic per role and per variant statistics:
+  - attempts
+  - passes
+  - clean_passes
+  - failures grouped by error code
+
+Policy updates may only use deterministic inputs:
+- validator codes
+- exit code
+- diff statistics
+- retry counts
+
+No natural language interpretation of codex output is allowed for gating or policy updates.
+
+ENGINE SECTION 7: Prompt variant selection framework
+
+Variant sources in priority order:
+1. prompts/<agent>/**/*.txt
+2. .orchestrator/prompt_templates/<agent>/**/*.txt
+3. internal embedded templates
+
+Skill injection source:
+- .codex/skills/<agent>/SKILL.md
+
+Prompt assembly must include:
+- selected role variant text
+- resolved skill body when present
+- deterministic role scoped excerpt from PROJECT_BRIEF.md and PROJECT_BRIEF.yaml that includes Layer 0 and all role required Layer 1 to Layer 3 requirements
+- read only hashed manifest excerpt
+- explicit instruction to follow project brief
+
+Deterministic role scoped extraction requirements:
+- Layer 0 constraints are mandatory for every role.
+- Excerpt must include role relevant acceptance checks and quality bars.
+- Excerpt must include role relevant endpoint, data, persistence, and testing constraints when applicable.
+- Excerpt minimum strength gate must pass:
+  - include at least 1200 words OR include at least 8 requirement bullets, whichever is larger.
+  - include at least 1 acceptance criterion bullet for the current role.
+  - include at least 1 constraint or non goal bullet for the current role when such constraints exist in the brief.
+
+Deterministic role coverage map:
+- release_engineer: Layer 0 constraints, required outputs, repository and bootstrap constraints, product acceptance gate summary.
+- planner: Layer 0 to Layer 3 global scope, required outputs, role targets, product acceptance gate.
+- requirements: Layer 0 to Layer 3 complete requirement extraction, acceptance outcomes, product acceptance gate.
+- designer: Layer 0 accessibility and audience constraints, Layer 1 gameplay loop and feedback model, Layer 3 interface and visual requirements, acceptance outcomes.
+- frontend: Layer 0 constraints, Layer 1 workspace and runtime behaviors, Layer 2 frontend-to-backend integration and telemetry emission constraints, Layer 3 UX requirements, acceptance outcomes.
+- backend: Layer 0 constraints, Layer 1 runtime outcome semantics, Layer 2 endpoint contract, persistence schema and telemetry integrity constraints, acceptance outcomes.
+- qa: Layer 0 to Layer 3 requirements required for deterministic verification, test extraction requirements, full product acceptance gate.
+- docs: Layer 0 to Layer 3 operationally relevant constraints, required outputs, test and run instructions, troubleshooting expectations.
+- product_acceptance_gate: full Layer 0 to Layer 3 coverage, all acceptance checks, and all deterministic validator expectations.
+
+Prompt epoching:
+- Compute prompt_epoch_id from variant content hash and skill content hash (or NO_SKILL marker).
+- Stats are tracked per role plus prompt_epoch_id.
+- Epoch change resets selection bootstrap for that role and epoch.
+
+Selection method requirements:
+- No randomness.
+- Deterministic ordering and tie breaks.
+- Support deterministic strategy configuration in policy:
+  - ucb1
+  - explore_then_commit
+  - rr_elimination
+
+ENGINE SECTION 8: Logging artifact schema
+
+For each run:
+- .orchestrator/runs/<run_id>/prompt_map.json
+- .orchestrator/runs/<run_id>/steps/<step_name>/attempt_<n>.json
+
+Per attempt record must include at minimum:
+- step_name
+- attempt number
+- variant_id
+- prompt_epoch_id
+- exit_code
+- changed_paths
+- validation_codes
+- rollback_applied
+- retries_used
+- skill_path
+- skill_hash
+- skill_used
+- prompt_word_count
+- brief_sections_included
+- requirement_ids_included
+- role_required_requirement_count
+- role_included_requirement_count
+- coverage_ratio
+- timestamp_utc
+
+Runtime visibility modes:
+- quiet
+- verbose
+
+ENGINE SECTION 9: Extension hooks (interfaces only)
+
+Hook A: prompt_library_bootstrap
+- Trigger condition: prompt or skill library missing or empty.
+- Allowed write scope: prompts/** and .codex/skills/** only.
+
+Hook B: prompt_tuner
+- Allowed write scope: prompts/** and .codex/skills/** only.
+- Must pass guardrail validators and deterministic scoring gate.
+- Changes are accepted only on strict score improvement.
+
+Guardrail validator interface:
+- file size caps
+- required skill front matter keys
+- forbidden unsafe substrings
+- non empty actionable skill body
+
+----------------------------------------------------------------------
+PROJECT PROMPT (REPLACEABLE PER PROJECT)
+
+This section is the only part to swap when changing project domain.
+Do not change engine sections when changing project type.
+
+PROJECT SECTION 1: Layer 0 to Layer 3 contract
+
+Provide explicit project constraints:
+- Layer 0: non negotiables
+- Layer 1: minimum viable product loop and acceptance outcomes
+- Layer 2: architecture and persistence constraints
+- Layer 3: content and user experience specifics
+
+PROJECT SECTION 2: Required outputs for this project
+
+Define exact root files and required directories.
+Define required generated assets and implementation artifacts.
+
+PROJECT SECTION 3: Endpoint and persistence requirements
+
+Define required backend endpoints.
+Define required persistence endpoints.
+Define persistence source of truth.
+Define data integrity checks.
+
+PROJECT SECTION 4: Content and product acceptance checks
+
+Define deterministic checks for:
+- feature completeness
+- persistence behavior
+- integration behavior
+- user experience baseline
+- deterministic test flow
+
+PROJECT SECTION 5: Role specific prompt and skill content targets
+
+For each role, define:
+- role scope and expected edits
+- must produce outputs
+- quality constraints
+- role specific checks if needed
+
+----------------------------------------------------------------------
+IMPLEMENTATION INSTRUCTIONS FOR CODEX
+
+1. Implement orchestrator.py at repository root.
+2. Follow every engine section requirement.
+3. Read PROJECT_BRIEF.md and PROJECT_BRIEF.yaml as the active project contract.
+4. Keep all orchestrator internal artifacts under .orchestrator.
+5. Enforce deterministic behavior everywhere.
+6. Do not rely on narrative claims of completion.
