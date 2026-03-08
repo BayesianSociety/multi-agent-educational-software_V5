@@ -23,9 +23,8 @@ The following interfaces are mandatory and fixed:
 - Purpose: authoritative Layer 0 to Layer 3 project constraints.
 
 2) Machine readable project contract file
-- Path: PROJECT_BRIEF.yaml
-- Parsing requirement: must be valid JSON text (YAML 1.2 JSON subset) so Python stdlib json parser can load it.
-- Purpose: deterministic toggles only.
+- Not required for this project.
+- PROJECT_BRIEF.md is the sole authoritative contract source.
 
 3) Error code style
 - All deterministic validator or invariant failures must emit uppercase underscore error codes.
@@ -38,7 +37,7 @@ The following interfaces are mandatory and fixed:
   - .orchestrator/evals/<run_id>.json
 
 5) Locking contract
-- PROJECT_BRIEF.md and PROJECT_BRIEF.yaml become locked after bootstrap step success.
+- PROJECT_BRIEF.md becomes locked after bootstrap step success.
 - Any later modification attempt is a hard failure with deterministic rollback.
 
 ----------------------------------------------------------------------
@@ -51,7 +50,7 @@ This orchestrator runs deterministic multi step software generation through code
 ENGINE SECTION 1: Environment and command invocation behavior
 
 Requirements:
-- Python 3.11 or newer.
+- Python 3.10 or newer.
 - Must run inside a Git repository.
 - Use codex exec as subprocess. Do not use OpenAI API. Do not use Codex software development kit.
 
@@ -92,6 +91,8 @@ After each codex run, before writing .orchestrator artifacts:
 - Enforce allowlist for current step.
 - Enforce path traversal and symlink safety.
 - Enforce change caps.
+- Ignore volatile runtime cache artifacts in change-path validation (for example `__pycache__/`, `*.pyc`, `*.pyo`) so deterministic checks do not fail on interpreter byproducts.
+- Also ignore deterministic runtime byproducts from test/tool execution (for example `node_modules/`, `.pytest_cache/`, `.mypy_cache/`, `.ruff_cache/`, `coverage/`, `.coverage`, `*.tsbuildinfo`, `*.log`) in change-path validation.
 
 Forbidden paths:
 - .orchestrator/**
@@ -117,6 +118,17 @@ Pipeline steps (minimum):
 
 Rules:
 - Every step has explicit allowlisted paths.
+- release_engineer allowlist must include bootstrap and structure paths:
+  - design/**
+  - frontend/**
+  - backend/**
+  - tests/**
+- product_acceptance_gate allowlist must include at minimum:
+  - TEST.md
+  - tests/**
+  - prompts/product_acceptance_gate/**
+  - .codex/skills/product_acceptance_gate/**
+- product_acceptance_gate may use a repository-wide allowlist (`**`) while still enforcing forbidden roots and safety invariants, to avoid false failures during final validation and docs/test reconciliation.
 - A step can pass only if codex exit code is success and all step validators pass.
 - Retries are bounded, maximum three attempts per step.
 - Rollback is required on failed attempts.
@@ -151,17 +163,19 @@ Deterministic validator classes:
 - Cross ownership edits produce deterministic failure codes.
 
 4. Infrastructure validators
-- docker-compose.yml, .env.example, .gitignore expectations when backend or database is required.
+- .env.example, .gitignore expectations when backend or database is required.
 
 5. Project brief validators
 - PROJECT_BRIEF.md exists and includes required layer headings.
-- PROJECT_BRIEF.yaml parses with json parser and required keys exist.
 
 6. Product acceptance validators
 - Required behavior implemented.
 - Persistence path implemented and verifiable.
 - End to end deterministic test exists and passes.
 - User experience baseline checks present.
+- Backend integration evidence checks must be language-agnostic and include Python sources when present (for example `.py` alongside `.ts/.js/.json/.sql/.md`).
+- Backend endpoint evidence matching must accept route declarations in source code (for example `app.get('/health', ...)`) and must not require only literal documentation strings like `GET /health`.
+- Parameterized route evidence must accept either placeholder style (for example `/api/levels/:id`) or dynamic-prefix style (for example checks using `/api/levels/` and `startsWith(...)`).
 
 7. Prompt quality and coverage validators
 - Every step prompt must include Layer 0 constraints.
@@ -178,15 +192,12 @@ Deterministic validator classes:
 ENGINE SECTION 5: Test command extraction framework
 
 Default deterministic extraction:
-- Read TEST.md section titled "How to run tests".
+- Read TEST.md section titled "How to run tests" or "Deterministic QA Command" (case-insensitive).
 - Use first fenced code block.
 - Execute non empty non comment lines in order.
 - Any extraction failure returns TEST_CMD_MISSING.
-
-Optional profile extraction from PROJECT_BRIEF.yaml:
-- If tests.command_source equals profile and tests.commands is present:
-  - execute only listed commands in order.
-  - validate TEST.md documents these commands.
+- If neither section exists, use the first fenced code block in TEST.md as deterministic fallback.
+- Execute extracted test commands with deterministic environment safeguards that disable Python bytecode emission (`PYTHONDONTWRITEBYTECODE=1`) to prevent test-run cache artifacts from creating validator noise.
 
 ENGINE SECTION 6: Policy learning framework
 
@@ -219,7 +230,7 @@ Skill injection source:
 Prompt assembly must include:
 - selected role variant text
 - resolved skill body when present
-- deterministic role scoped excerpt from PROJECT_BRIEF.md and PROJECT_BRIEF.yaml that includes Layer 0 and all role required Layer 1 to Layer 3 requirements
+- deterministic role scoped excerpt from PROJECT_BRIEF.md that includes Layer 0 and all role required Layer 1 to Layer 3 requirements
 - read only hashed manifest excerpt
 - explicit instruction to follow project brief
 
@@ -352,7 +363,7 @@ IMPLEMENTATION INSTRUCTIONS FOR CODEX
 
 1. Implement orchestrator.py at repository root.
 2. Follow every engine section requirement.
-3. Read PROJECT_BRIEF.md and PROJECT_BRIEF.yaml as the active project contract.
+3. Read PROJECT_BRIEF.md as the active project contract.
 4. Keep all orchestrator internal artifacts under .orchestrator.
 5. Enforce deterministic behavior everywhere.
 6. Do not rely on narrative claims of completion.

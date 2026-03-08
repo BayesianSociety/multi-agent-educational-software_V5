@@ -1,0 +1,131 @@
+{
+  "flags": {
+    "ask_for_approval": false,
+    "config": true,
+    "experimental_json": false,
+    "output_schema": true
+  },
+  "run_id": "20260308T121009Z",
+  "steps": {
+    "backend": {
+      "brief_sections_included": [
+        "Layer 0",
+        "Layer 1",
+        "Layer 2",
+        "Product Acceptance Gate"
+      ],
+      "prompt_epoch_id": "f9334765a85247a80bdc69c8d0f46a3a312622107ee339dbc53aab6fbbf302af",
+      "skill_hash": "NO_SKILL",
+      "skill_path": null,
+      "variant_id": "embedded/backend/default"
+    },
+    "designer": {
+      "brief_sections_included": [
+        "Layer 0",
+        "Layer 1",
+        "Layer 3",
+        "Product Acceptance Gate"
+      ],
+      "prompt_epoch_id": "e3f5dcd0043c5aad1763181270bd6d7ba87bd3b35a71d03ebc4e98411b25395f",
+      "skill_hash": "e4b09b78f4bd9579cd6cb0c85c20468cc37ab45bcda5578414bc8ec3f26a7d0c",
+      "skill_path": ".codex/skills/designer/SKILL.md",
+      "variant_id": "embedded/designer/default"
+    },
+    "docs": {
+      "brief_sections_included": [
+        "Layer 0",
+        "Layer 1",
+        "Layer 2",
+        "Layer 3",
+        "Required Outputs",
+        "Product Acceptance Gate"
+      ],
+      "prompt_epoch_id": "cf4ff9a99cc674e0cd1ef2bf6052851177ce536c4941cac2a5d4ca28f05b834c",
+      "skill_hash": "NO_SKILL",
+      "skill_path": null,
+      "variant_id": "embedded/docs/default"
+    },
+    "frontend": {
+      "brief_sections_included": [
+        "Layer 0",
+        "Layer 1",
+        "Layer 2",
+        "Layer 3",
+        "Product Acceptance Gate"
+      ],
+      "prompt_epoch_id": "50e12903c1469fba731ba579683b1af455096850510612ceb794e706f8a89b55",
+      "skill_hash": "23d661872a7f61206ec931521e98a3432c9e799f8c67c8d446d537680aab49d4",
+      "skill_path": ".codex/skills/frontend/SKILL.md",
+      "variant_id": "embedded/frontend/default"
+    },
+    "planner": {
+      "brief_sections_included": [
+        "Layer 0",
+        "Layer 1",
+        "Layer 2",
+        "Layer 3",
+        "Required Outputs",
+        "Product Acceptance Gate",
+        "Role Targets"
+      ],
+      "prompt_epoch_id": "eec467058ec2c96a708af2175e83aaef35610d46b0313e46cfe9a885b9035ad0",
+      "skill_hash": "e806b4d5bef602842e30632934fb2ec6e2a089fb965e4d354954942529a2bb58",
+      "skill_path": ".codex/skills/planner/SKILL.md",
+      "variant_id": "embedded/planner/default"
+    },
+    "product_acceptance_gate": {
+      "brief_sections_included": [
+        "Layer 0",
+        "Layer 1",
+        "Layer 2",
+        "Layer 3",
+        "Required Outputs",
+        "Product Acceptance Gate",
+        "Role Targets"
+      ],
+      "prompt_epoch_id": "0883d4a2d3d82ae6e58460fbcdf235c950ec2b989600f6922ea43d06a56dcd1c",
+      "skill_hash": "NO_SKILL",
+      "skill_path": null,
+      "variant_id": "embedded/product_acceptance_gate/default"
+    },
+    "qa": {
+      "brief_sections_included": [
+        "Layer 0",
+        "Layer 1",
+        "Layer 2",
+        "Layer 3",
+        "Product Acceptance Gate",
+        "Required Outputs"
+      ],
+      "prompt_epoch_id": "185ae0d51e1ae670590f1ebe7b2425b2aac877e5b7a57ffb46cc1c383d49f5f7",
+      "skill_hash": "NO_SKILL",
+      "skill_path": null,
+      "variant_id": "embedded/qa/default"
+    },
+    "release_engineer": {
+      "brief_sections_included": [
+        "Layer 0",
+        "Required Outputs",
+        "Product Acceptance Gate",
+        "Role Targets"
+      ],
+      "prompt_epoch_id": "8e25d672a1aa5e5679c93a421048ce94a1e8044206c2352462098443ac015825",
+      "skill_hash": "NO_SKILL",
+      "skill_path": null,
+      "variant_id": "embedded/release_engineer/default"
+    },
+    "requirements": {
+      "brief_sections_included": [
+        "Layer 0",
+        "Layer 1",
+        "Layer 2",
+        "Layer 3",
+        "Product Acceptance Gate"
+      ],
+      "prompt_epoch_id": "415ecfd11759c0dd7750873ab1b6a7597e9d6519450310d862e5b03e805ea1fc",
+      "skill_hash": "1b7c921ae8d224db2526e891bcd4c30d0af5728034981df6d0351d71aced9e19",
+      "skill_path": ".codex/skills/requirements/SKILL.md",
+      "variant_id": "embedded/requirements/default"
+    }
+  }
+}

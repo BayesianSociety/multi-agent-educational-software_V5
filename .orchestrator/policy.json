@@ -1,0 +1,184 @@
+{
+  "roles": {
+    "backend": {
+      "epochs": {
+        "f9334765a85247a80bdc69c8d0f46a3a312622107ee339dbc53aab6fbbf302af": {
+          "variants": {
+            "embedded/backend/default": {
+              "attempts": 2,
+              "clean_passes": 2,
+              "failures": {},
+              "passes": 2
+            }
+          }
+        }
+      }
+    },
+    "designer": {
+      "epochs": {
+        "5140b9cd4907d5c9db40f47c7b7c2346613a2c269a6600eb1cb44333532862ec": {
+          "variants": {
+            "embedded/designer/default": {
+              "attempts": 1,
+              "clean_passes": 1,
+              "failures": {},
+              "passes": 1
+            }
+          }
+        },
+        "e3f5dcd0043c5aad1763181270bd6d7ba87bd3b35a71d03ebc4e98411b25395f": {
+          "variants": {
+            "embedded/designer/default": {
+              "attempts": 1,
+              "clean_passes": 1,
+              "failures": {},
+              "passes": 1
+            }
+          }
+        }
+      }
+    },
+    "docs": {
+      "epochs": {
+        "cf4ff9a99cc674e0cd1ef2bf6052851177ce536c4941cac2a5d4ca28f05b834c": {
+          "variants": {
+            "embedded/docs/default": {
+              "attempts": 1,
+              "clean_passes": 1,
+              "failures": {},
+              "passes": 1
+            }
+          }
+        }
+      }
+    },
+    "frontend": {
+      "epochs": {
+        "50e12903c1469fba731ba579683b1af455096850510612ceb794e706f8a89b55": {
+          "variants": {
+            "embedded/frontend/default": {
+              "attempts": 1,
+              "clean_passes": 1,
+              "failures": {},
+              "passes": 1
+            }
+          }
+        },
+        "5562a1a0f5e227eb65d5d23bca6cdb0d4d42e1346a597628d7a43efa86bde5d4": {
+          "variants": {
+            "embedded/frontend/default": {
+              "attempts": 1,
+              "clean_passes": 1,
+              "failures": {},
+              "passes": 1
+            }
+          }
+        }
+      }
+    },
+    "planner": {
+      "epochs": {
+        "6232830e312f4f11a772f80329e7bf8e0f74ec081db117f548812a7db402dd3f": {
+          "variants": {
+            "embedded/planner/default": {
+              "attempts": 1,
+              "clean_passes": 1,
+              "failures": {},
+              "passes": 1
+            }
+          }
+        },
+        "eec467058ec2c96a708af2175e83aaef35610d46b0313e46cfe9a885b9035ad0": {
+          "variants": {
+            "embedded/planner/default": {
+              "attempts": 1,
+              "clean_passes": 1,
+              "failures": {},
+              "passes": 1
+            }
+          }
+        }
+      }
+    },
+    "product_acceptance_gate": {
+      "epochs": {
+        "0883d4a2d3d82ae6e58460fbcdf235c950ec2b989600f6922ea43d06a56dcd1c": {
+          "variants": {
+            "embedded/product_acceptance_gate/default": {
+              "attempts": 1,
+              "clean_passes": 1,
+              "failures": {},
+              "passes": 1
+            }
+          }
+        }
+      }
+    },
+    "qa": {
+      "epochs": {
+        "185ae0d51e1ae670590f1ebe7b2425b2aac877e5b7a57ffb46cc1c383d49f5f7": {
+          "variants": {
+            "embedded/qa/default": {
+              "attempts": 4,
+              "clean_passes": 1,
+              "failures": {
+                "BACKEND_UNUSED": 3
+              },
+              "passes": 1
+            }
+          }
+        }
+      }
+    },
+    "release_engineer": {
+      "epochs": {
+        "8e25d672a1aa5e5679c93a421048ce94a1e8044206c2352462098443ac015825": {
+          "variants": {
+            "embedded/release_engineer/default": {
+              "attempts": 2,
+              "clean_passes": 2,
+              "failures": {},
+              "passes": 2
+            }
+          }
+        }
+      }
+    },
+    "requirements": {
+      "epochs": {
+        "415ecfd11759c0dd7750873ab1b6a7597e9d6519450310d862e5b03e805ea1fc": {
+          "variants": {
+            "embedded/requirements/default": {
+              "attempts": 1,
+              "clean_passes": 1,
+              "failures": {},
+              "passes": 1
+            }
+          }
+        },
+        "fb007750335be3ea797ef49cba690da3ff87cf51119fd1080e6d740ee9340007": {
+          "variants": {
+            "embedded/requirements/default": {
+              "attempts": 1,
+              "clean_passes": 1,
+              "failures": {},
+              "passes": 1
+            }
+          }
+        }
+      }
+    }
+  },
+  "selection_strategy": "explore_then_commit",
+  "unsupported_flags": {
+    "20260308T100556Z": [
+      "--experimental-json",
+      "--ask-for-approval"
+    ],
+    "20260308T121009Z": [
+      "--experimental-json",
+      "--ask-for-approval"
+    ]
+  },
+  "version": 1
+}

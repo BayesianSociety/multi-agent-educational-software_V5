@@ -1,2 +1,6 @@
 cat Prompt_5_separate_pipeline_engine_from_project_pack.txt Prompt_4_project_brief.txt \
   | codex exec --full-auto --json -o ./last_message.txt
+  
+codex exec --sandbox workspace-write - < Prompt_5_separate_pipeline_engine_from_project_pack.txt | tee run_prompt5.log
+
+python3 orchestrator.py --visibility verbose --strategy explore_then_commit | tee orchestrator_run.log

@@ -1,0 +1,102 @@
+{
+  "flags": {
+    "ask_for_approval": false,
+    "config": true,
+    "experimental_json": false,
+    "output_schema": true
+  },
+  "run_id": "20260308T100556Z",
+  "steps": {
+    "backend": {
+      "brief_sections_included": [
+        "Layer 0",
+        "Layer 1",
+        "Layer 2",
+        "Product Acceptance Gate"
+      ],
+      "prompt_epoch_id": "f9334765a85247a80bdc69c8d0f46a3a312622107ee339dbc53aab6fbbf302af",
+      "skill_hash": "NO_SKILL",
+      "skill_path": null,
+      "variant_id": "embedded/backend/default"
+    },
+    "designer": {
+      "brief_sections_included": [
+        "Layer 0",
+        "Layer 1",
+        "Layer 3",
+        "Product Acceptance Gate"
+      ],
+      "prompt_epoch_id": "5140b9cd4907d5c9db40f47c7b7c2346613a2c269a6600eb1cb44333532862ec",
+      "skill_hash": "NO_SKILL",
+      "skill_path": null,
+      "variant_id": "embedded/designer/default"
+    },
+    "frontend": {
+      "brief_sections_included": [
+        "Layer 0",
+        "Layer 1",
+        "Layer 2",
+        "Layer 3",
+        "Product Acceptance Gate"
+      ],
+      "prompt_epoch_id": "5562a1a0f5e227eb65d5d23bca6cdb0d4d42e1346a597628d7a43efa86bde5d4",
+      "skill_hash": "NO_SKILL",
+      "skill_path": null,
+      "variant_id": "embedded/frontend/default"
+    },
+    "planner": {
+      "brief_sections_included": [
+        "Layer 0",
+        "Layer 1",
+        "Layer 2",
+        "Layer 3",
+        "Required Outputs",
+        "Product Acceptance Gate",
+        "Role Targets"
+      ],
+      "prompt_epoch_id": "6232830e312f4f11a772f80329e7bf8e0f74ec081db117f548812a7db402dd3f",
+      "skill_hash": "NO_SKILL",
+      "skill_path": null,
+      "variant_id": "embedded/planner/default"
+    },
+    "qa": {
+      "brief_sections_included": [
+        "Layer 0",
+        "Layer 1",
+        "Layer 2",
+        "Layer 3",
+        "Product Acceptance Gate",
+        "Required Outputs"
+      ],
+      "prompt_epoch_id": "185ae0d51e1ae670590f1ebe7b2425b2aac877e5b7a57ffb46cc1c383d49f5f7",
+      "skill_hash": "NO_SKILL",
+      "skill_path": null,
+      "variant_id": "embedded/qa/default"
+    },
+    "release_engineer": {
+      "brief_sections_included": [
+        "Layer 0",
+        "Required Outputs",
+        "Product Acceptance Gate",
+        "Role Targets"
+      ],
+      "prompt_epoch_id": "8e25d672a1aa5e5679c93a421048ce94a1e8044206c2352462098443ac015825",
+      "skill_hash": "NO_SKILL",
+      "skill_path": null,
+      "variant_id": "embedded/release_engineer/default"
+    },
+    "requirements": {
+      "brief_sections_included": [
+        "Layer 0",
+        "Layer 1",
+        "Layer 2",
+        "Layer 3",
+        "Product Acceptance Gate"
+      ],
+      "prompt_epoch_id": "fb007750335be3ea797ef49cba690da3ff87cf51119fd1080e6d740ee9340007",
+      "skill_hash": "NO_SKILL",
+      "skill_path": null,
+      "variant_id": "embedded/requirements/default"
+    }
+  }
+}

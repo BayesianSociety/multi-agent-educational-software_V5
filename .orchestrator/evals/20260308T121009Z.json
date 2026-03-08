@@ -1,0 +1,53 @@
+{
+  "ended_at": "2026-03-08T12:43:18+00:00",
+  "run_id": "20260308T121009Z",
+  "started_at": "2026-03-08T12:10:09+00:00",
+  "status": "passed",
+  "steps": [
+    {
+      "codes": [],
+      "status": "passed",
+      "step": "release_engineer"
+    },
+    {
+      "codes": [],
+      "status": "passed",
+      "step": "planner"
+    },
+    {
+      "codes": [],
+      "status": "passed",
+      "step": "requirements"
+    },
+    {
+      "codes": [],
+      "status": "passed",
+      "step": "designer"
+    },
+    {
+      "codes": [],
+      "status": "passed",
+      "step": "frontend"
+    },
+    {
+      "codes": [],
+      "status": "passed",
+      "step": "backend"
+    },
+    {
+      "codes": [],
+      "status": "passed",
+      "step": "qa"
+    },
+    {
+      "codes": [],
+      "status": "passed",
+      "step": "docs"
+    },
+    {
+      "codes": [],
+      "status": "passed",
+      "step": "product_acceptance_gate"
+    }
+  ]
+}

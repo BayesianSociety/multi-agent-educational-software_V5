@@ -1,0 +1,45 @@
+{
+  "ended_at": "2026-03-08T10:45:20+00:00",
+  "run_id": "20260308T100556Z",
+  "started_at": "2026-03-08T10:05:56+00:00",
+  "status": "failed",
+  "steps": [
+    {
+      "codes": [],
+      "status": "passed",
+      "step": "release_engineer"
+    },
+    {
+      "codes": [],
+      "status": "passed",
+      "step": "planner"
+    },
+    {
+      "codes": [],
+      "status": "passed",
+      "step": "requirements"
+    },
+    {
+      "codes": [],
+      "status": "passed",
+      "step": "designer"
+    },
+    {
+      "codes": [],
+      "status": "passed",
+      "step": "frontend"
+    },
+    {
+      "codes": [],
+      "status": "passed",
+      "step": "backend"
+    },
+    {
+      "codes": [
+        "BACKEND_UNUSED"
+      ],
+      "status": "failed",
+      "step": "qa"
+    }
+  ]
+}
